@@ -80,4 +80,56 @@ class ProjectController extends Controller
 
         return redirect('/dashboard')->with('delete', 'Project Deleted Successfully');
     }
+
+    // Tasks
+    public function addTask($id)
+    {
+        $project = Project::where('id', $id)
+            ->firstOrFail();
+        return view('Projects.Tasks.add', compact('project'));
+    }
+
+    public function addNewTask(Request $request, $id)
+    {
+        $data = $request->validate([
+            'title' => ['required', 'min:4'],
+        ]);
+
+        Tasks::create([
+            'title' => $data['title'],
+            'project_id' => $id,
+        ]);
+
+        return redirect()->route('show-project', $id);
+    }
+
+    public function editTask($id)
+    {
+        $task = Tasks::where('id', $id)
+            ->firstOrFail();
+        return view('Projects.Tasks.edit', compact('task'));
+    }
+
+    public function doEditTask(Request $request, $id)
+    {
+        $data = $request->validate([
+            'title' => ['required', 'min:4'],
+        ]);
+
+        Tasks::where('id', $id)
+            ->update([
+                'title' => $data['title'],
+            ]);
+
+        return redirect()->route('show-project', Tasks::where('id', $id)->firstOrFail()->project_id);
+    }
+
+    public function deleteTask($id)
+    {
+        $task = Tasks::where('id', $id);
+        $projectId = $task->firstOrFail()->project_id;
+        $task->delete();
+
+        return redirect()->route('show-project', $projectId)->with('delete', 'Task Deleted Successfully');
+    }
 }

@@ -29,3 +29,7 @@ Route::delete('/delete-project/{id}', [ProjectController::class, 'delete'])->nam
 // TASKS
 // -----------------------------------
 Route::get('/dashboard/show/{id}/add', [ProjectController::class, 'addTask'])->name('show-add-task');
+Route::post('/dashboard/show/{id}/add', [ProjectController::class, 'addNewTask'])->name('add-task');
+Route::get('/dashboard/show/{id}/edit', [ProjectController::class, 'editTask'])->name('edit-task');
+Route::post('/dashboard/show/{id}/edit', [ProjectController::class, 'doEditTask'])->name('do-edit-task');
+Route::delete('/dashboard/show/{id}/delete', [ProjectController::class, 'deleteTask'])->name('delete-task');

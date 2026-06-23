@@ -1,5 +1,5 @@
 @extends('common.app')
-@section('title', '{{ $project->title }}')
+@section('title', 'Project')
 
 @section('content')
     <div class="container mt-5">
@@ -14,9 +14,9 @@
         @endif
         <div class="row g-4">
             <h1 class="text-success mb-5">{{ $project->title }}</h1>
-            <form action="{{ route('show-add-task') }}" method="POST">
+            <form action="{{ route('show-add-task', $project->id) }}" method="GET">
                 @csrf
-                <button type="submit">Add New Task</button>
+                <button class="btn btn-primary" type="submit">Add New Task</button>
             </form>
             @if ($tasks->isempty())
                 <div class="alert alert-danger">
@@ -25,11 +25,11 @@
                     </ul>
                 </div>
             @else
-                <table class="table">
+                <table class="table bordered">
                     <thead>
                         <tr>
-                            <th scope="col">id</th>
                             <th scope="col">Task</th>
+                            <th scope="col">Task Statue</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -37,7 +37,27 @@
                         @foreach ($tasks as $task)
                             <tr>
                                 <td>{{ $task->title }}</td>
-                                <td>{{ $task->statue }}</td>
+                                <td>
+                                    <select class="form-control" name="statue">
+                                        <option value="pending" {{ $task->statue == 'pending' ? 'selected' : '' }}>Pending
+                                        </option>
+                                        <option value="in-progress" {{ $task->statue == 'in-progress' ? 'selected' : '' }}>
+                                            In Progress</option>
+                                        <option value="completed" {{ $task->statue == 'completed' ? 'selected' : '' }}>
+                                            Completed</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-primary mt-2">Update</button>
+                                </td>
+                                <td>
+                                    <form action="{{ route('edit-task', $task->id) }}">
+                                        <button class="btn btn-sm btn-success">Edit</button>
+                                    </form>
+                                    <form action="{{ route('delete-task', $task->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger mt-2">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
